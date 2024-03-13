@@ -74,7 +74,7 @@ fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
 
     // x86_64::instructions::interrupts::int3();
 
-    loop {}
+    kernel::hlt_loop();
 }
 
 #[panic_handler]

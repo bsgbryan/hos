@@ -68,6 +68,10 @@ fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
 
     kernel::init();
 
+    // unsafe {
+    //     *(0xdeadbeef as *mut u8) = 42;
+    // };
+
     // x86_64::instructions::interrupts::int3();
 
     loop {}

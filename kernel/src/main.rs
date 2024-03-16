@@ -5,21 +5,22 @@ use core::panic::PanicInfo;
 
 use bootloader_api::BootInfo;
 
-use embedded_graphics::{
-    mono_font::{
-        ascii::FONT_10X20,
-        MonoTextStyle,
-    },
-    prelude::*,
-    text::{
-        Alignment,
-        Text,
-    },
-};
+// use embedded_graphics::{
+//     // mono_font::{
+//     //     ascii::FONT_10X20,
+//     //     MonoTextStyle,
+//     // },
+//     prelude::*,
+//     // text::{
+//     //     Alignment,
+//     //     Text,
+//     // },
+// };
 
-use crate::framebuffer::Display;
+// use crate::framebuffer::Display;
 
-mod framebuffer;
+// mod framebuffer;
+mod printer;
 
 bootloader_api::entry_point!(kernel_main);
 
@@ -65,6 +66,8 @@ fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
     //     )
     //     .draw(&mut display).unwrap();
     // }
+
+    println!("Hello World{}", "!");
 
     kernel::init();
 

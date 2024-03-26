@@ -1,67 +1,72 @@
 #![no_std]
 #![no_main]
 
+extern crate alloc;
+
 mod framebuffer;
 mod printer;
 
+use alloc::boxed::Box;
+
 use core::panic::PanicInfo;
 
-use bootloader_api::BootInfo;
+use bootloader_api::{
+    BootInfo,
+    config::{
+        BootloaderConfig,
+        Mapping,
+    },
+};
 
-// use embedded_graphics::{
-//     mono_font::{
-//         ascii::FONT_10X20,
-//         MonoTextStyle,
-//     },
-//     prelude::*,
-//     text::{
-//         Alignment,
-//         Text,
-//     },
-// };
 
-// use crate::framebuffer::Display;
+pub static BOOTLOADER_CONFIG: BootloaderConfig = {
+    let mut config = BootloaderConfig::new_default();
+    config.mappings.physical_memory = Some(Mapping::Dynamic);
+    config
+};
 
-bootloader_api::entry_point!(kernel_main);
+bootloader_api::entry_point!(kernel_main, config = &BOOTLOADER_CONFIG);
 
 fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
     if let Some(framebuffer) = boot_info.framebuffer.as_mut() {
-        printer::set_framebuffer(framebuffer);
+        use kernel::{
+            allocator,
+            memory,
+            memory::BootInfoFrameAllocator,
+        };
 
-        // println!("Hello World{}", "!");
+        use x86_64::{
+            structures::paging::Page,
+            VirtAddr,
+        };
+
+        printer::set_framebuffer(framebuffer);
 
         kernel::init();
 
-        // x86_64::instructions::interrupts::int3();
+        if let Some(addr) = boot_info.physical_memory_offset.take() {
+            let phys_mem_offset = VirtAddr::new(addr);
+            let mut mapper = unsafe { memory::init(phys_mem_offset) };
+            let mut frame_allocator = unsafe {
+                BootInfoFrameAllocator::init(&boot_info.memory_regions)
+            };
 
-        // unsafe {
-        //     *(0xdeadbeef as *mut u8) = 42;
-        // };
+            // map an unused page
+            let page = Page::containing_address(VirtAddr::new(0));
+            memory::create_example_mapping(page, &mut mapper, &mut frame_allocator);
 
-        // let info = framebuffer.info();
-        // let height = info.height;
-        // let stride = info.stride;
-        // let width = info.width;
-        // let magnitude = 1.0 / (width as f32 / 255.0);
-        // let area = stride as f32 * height as f32;
-        //
-        // for x in 0..width {
-        //     for y in 0..height {
-        //         let scale = magnitude * 255.0;
-        //         let col = x as f32 / 255.0;
-        //         let row = y as f32 / 255.0;
-        //         let red = (col * scale) as u8;
-        //         let green = (row * scale) as u8;
-        //         let depth = y as f32 * stride as f32;
-        //         let blue = (((depth + x as f32) / area) * 255.0) as u8;
-        //
-        //         framebuffer::set_pixel_in(
-        //             framebuffer,
-        //             framebuffer::Position { x, y },
-        //             framebuffer::Color { red, green, blue },
-        //         );
-        //     }
-        // }
+            // write the string `New!` to the screen through the new mapping
+            let page_ptr: *mut u64 = page.start_address().as_mut_ptr();
+            unsafe { page_ptr.offset(400).write_volatile(0x_f021_f077_f065_f04e)};
+
+            allocator::init_heap(&mut mapper, &mut frame_allocator).
+                expect("heap initialization failed");
+
+            let x = Box::new(41);
+
+            println!("heap_value at {:p}", x);
+            // println!("It worked!");
+        }
     }
 
     kernel::hlt_loop();

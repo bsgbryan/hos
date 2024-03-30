@@ -564,8 +564,23 @@ name = "hos"
 version = "0.1.0"
 dependencies = [
  "bootloader",
- "kernel",
+ "hos_kernel",
  "ovmf-prebuilt",
+]
+
+[[package]]
+name = "hos_kernel"
+version = "0.1.0"
+dependencies = [
+ "bootloader_api",
+ "embedded-graphics",
+ "lazy_static",
+ "linked_list_allocator",
+ "pc-keyboard",
+ "pic8259",
+ "spin",
+ "volatile 0.2.7",
+ "x86_64",
 ]
 
 [[package]]
@@ -593,21 +608,6 @@ name = "itoa"
 version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
-
-[[package]]
-name = "kernel"
-version = "0.1.0"
-dependencies = [
- "bootloader_api",
- "embedded-graphics",
- "lazy_static",
- "linked_list_allocator",
- "pc-keyboard",
- "pic8259",
- "spin",
- "volatile 0.2.7",
- "x86_64",
-]
 
 [[package]]
 name = "lazy_static"

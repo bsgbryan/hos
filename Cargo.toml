@@ -19,8 +19,8 @@ version = "0.1.0"
 ovmf-prebuilt = "0.1.0-alpha"
 
 [build-dependencies]
-kernel = { path = "kernel", artifact = "bin", target = "x86_64-unknown-none", version = "0.1.0" }
+hos_kernel = { path = "kernel", artifact = "bin", target = "x86_64-unknown-none", version = "0.1.0" }
 bootloader = "0.11.3"
 
 [workspace.dependencies]
-kernel = { version = "0.1.0", path = "kernel" }
+hos_kernel = { version = "0.1.0", path = "kernel" }

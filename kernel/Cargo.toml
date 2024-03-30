@@ -7,7 +7,7 @@ repository.workspace = true
 version.workspace = true
 
 [[bin]]
-name = "kernel"
+name = "hos_kernel"
 path = "src/main.rs"
 test = false
 bench = false

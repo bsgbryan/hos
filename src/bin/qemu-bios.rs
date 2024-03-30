@@ -1,6 +1,9 @@
 use std::{
     env,
-    process::{self, Command},
+    process::{
+        self,
+        Command,
+    },
 };
 
 fn main() {

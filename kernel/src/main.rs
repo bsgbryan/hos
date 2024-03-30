@@ -29,7 +29,7 @@ bootloader_api::entry_point!(kernel_main, config = &BOOTLOADER_CONFIG);
 
 fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
     if let Some(framebuffer) = boot_info.framebuffer.as_mut() {
-        use kernel::{
+        use hos_kernel::{
             allocator,
             memory,
             memory::BootInfoFrameAllocator,
@@ -42,7 +42,7 @@ fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
 
         printer::set_framebuffer(framebuffer);
 
-        kernel::init();
+        hos_kernel::init();
 
         if let Some(addr) = boot_info.physical_memory_offset.take() {
             let phys_mem_offset = VirtAddr::new(addr);
@@ -69,7 +69,7 @@ fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
         }
     }
 
-    kernel::hlt_loop();
+    hos_kernel::hlt_loop();
 }
 
 #[panic_handler]

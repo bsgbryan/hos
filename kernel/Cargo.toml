@@ -1,11 +1,14 @@
 [package]
 authors = ["Bryan Maynard <bsgbryan@gmail.com>"]
 edition = "2021"
-name = "kernel"
-version = "0.1.0"
+license.workspace = true
+name = "hos_kernel"
+repository.workspace = true
+version.workspace = true
 
 [[bin]]
 name = "kernel"
+path = "src/main.rs"
 test = false
 bench = false
 

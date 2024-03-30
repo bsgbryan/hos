@@ -1,9 +1,16 @@
-#![feature(abi_x86_interrupt)]
 #![no_std]
 
+#![feature(abi_x86_interrupt)]
+#![feature(const_mut_refs)]
+#![feature(type_alias_impl_trait)]
+
+extern crate alloc;
+
+pub mod allocator;
 pub mod framebuffer;
 pub mod interrupts;
 pub mod gdt;
+pub mod memory;
 pub mod printer;
 
 pub fn init() {

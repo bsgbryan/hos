@@ -1,7 +1,8 @@
 [package]
+authors = ["Bryan Maynard <bsgbryan@gmail.com>"]
+edition = "2021"
 name = "kernel"
 version = "0.1.0"
-edition = "2021"
 
 [[bin]]
 name = "kernel"

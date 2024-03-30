@@ -1,15 +1,26 @@
 [package]
-name = "hos"
-version = "0.1.0"
-edition = "2021"
+authors = ["Bryan Maynard <bsgbryan@gmail.com>"]
 default-run = "qemu-uefi"
+edition = "2021"
+license.workspace = true
+name = "hos"
+repository.workspace = true
+version.workspace = true
 
 [workspace]
 members = ["kernel"]
+
+[workspace.package]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/bsgbryan/hos"
+version = "0.1.0"
 
 [dependencies]
 ovmf-prebuilt = "0.1.0-alpha"
 
 [build-dependencies]
-kernel = { path = "kernel", artifact = "bin", target = "x86_64-unknown-none" }
+kernel = { path = "kernel", artifact = "bin", target = "x86_64-unknown-none", version = "0.1.0" }
 bootloader = "0.11.3"
+
+[workspace.dependencies]
+kernel = { version = "0.1.0", path = "kernel" }

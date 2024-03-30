@@ -1,6 +1,7 @@
 [package]
 authors = ["Bryan Maynard <bsgbryan@gmail.com>"]
 default-run = "qemu-uefi"
+description = "HOS: an Operating System that makes people Happy 😊"
 edition = "2021"
 license.workspace = true
 name = "hos"

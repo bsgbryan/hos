@@ -1,5 +1,6 @@
 [package]
 authors = ["Bryan Maynard <bsgbryan@gmail.com>"]
+description = "The kernel for HOS: the Happy Operating System 😊"
 edition = "2021"
 license.workspace = true
 name = "hos_kernel"

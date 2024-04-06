@@ -3,7 +3,6 @@
 
 extern crate alloc;
 
-mod framebuffer;
 mod printer;
 
 use alloc::boxed::Box;
@@ -40,7 +39,10 @@ fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
             VirtAddr,
         };
 
-        printer::set_framebuffer(framebuffer);
+        let info = framebuffer.info();
+        let buffer = framebuffer.buffer_mut();
+
+        printer::set_framebuffer(buffer, info);
 
         hos_kernel::init();
 
@@ -65,7 +67,7 @@ fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
             let x = Box::new(41);
 
             println!("heap_value at {:p}", x);
-            // println!("It worked!");
+            println!("It worked!");
         }
     }
 

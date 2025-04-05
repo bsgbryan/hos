@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "os_exporation"
+name = "hos"
 version = "0.1.0"

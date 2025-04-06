@@ -14,4 +14,15 @@
 use core::arch::global_asm;
 
 // Assembly counterpart to this file.
-global_asm!(include_str!("boot.s"));
+global_asm!(
+  include_str!("boot.s"),
+  CONST_CORE_ID_MASK = const 0b11,
+);
+
+/// The Rust entry point for the `kernal` binary
+/// 
+/// This is called from the assembly `_start` function
+#[unsafe(no_mangle)]
+pub fn _start_rust() -> ! {
+  unsafe { crate::kernel_init() }
+}

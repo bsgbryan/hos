@@ -1,6 +1,6 @@
 [package]
 name = "hos"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 
 [profile.release]
@@ -16,3 +16,6 @@ name = "kernel"
 path = "src/main.rs"
 
 [dependencies]
+# Platform specific dependencies
+[target.'cfg(target_arch = "aarch64")'.dependencies]
+aarch64-cpu = { version = "=10.0.0" }

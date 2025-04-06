@@ -2,6 +2,9 @@
 //
 // Copyright (c) 2025 Bryan Maynard <bsgbryan@gmail.com>
 
-//! Top-level BSP file for the Raspberry Pi 3 and 4.
+use aarch64_cpu::asm;
 
-pub mod cpu;
+#[inline(always)]
+pub fn wait_forever() -> ! {
+  loop { asm::wfe() }
+}

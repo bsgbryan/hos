@@ -2,6 +2,6 @@
 //
 // Copyright (c) 2025 Bryan Maynard <bsgbryan@gmail.com>
 
-//! Top-level BSP file for the Raspberry Pi 3 and 4.
-
-pub mod cpu;
+#[unsafe(no_mangle)]
+#[unsafe(link_section = ".text._start_arguments")]
+pub static BOOT_CORE_ID: u64 = 0;

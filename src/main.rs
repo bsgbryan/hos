@@ -6,16 +6,20 @@
 //! HOS' kernel
 //! 
 
+#![feature(format_args_nl)]
 #![no_main]
 #![no_std]
 
 mod bsp;
+mod console;
 mod cpu;
 mod panic_wait;
+mod print;
 
 ///
 /// Initialize the kernel
 /// 
 unsafe fn kernel_init() -> ! {
-  panic!()
+  println!("Hello from Rust!");
+  panic!("Stopping here")
 }

@@ -2,7 +2,7 @@
 //
 // Copyright (c) 2025 Bryan Maynard <bsgbryan@gmail.com>
 
-use core::cell::UnsafeCell;
+use core::cell::SyncUnsafeCell;
 
 pub mod interface {
   pub trait Mutex {
@@ -14,13 +14,13 @@ pub mod interface {
 
 pub struct NullLock<T>
 where T: ?Sized {
-  data: UnsafeCell<T>,
+  data: SyncUnsafeCell<T>,
 }
 
 impl<T> NullLock<T> {
   pub const fn new(data: T) -> Self {
     Self {
-      data: UnsafeCell::new(data),
+      data: SyncUnsafeCell::new(data),
     }
   }
 }

@@ -18,7 +18,7 @@ impl interface::Write for NullConsole {
     fmt::Result::Ok(())
   }
 
-  // fn flush(&self) {}
+  fn flush(&self) {}
 }
 
 impl interface::Read for NullConsole {

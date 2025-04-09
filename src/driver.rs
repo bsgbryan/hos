@@ -4,12 +4,9 @@
 
 //! OS driver support
 
-use crate::{
-  println,
-  synchronization::{
-    interface::Mutex,
-    NullLock,
-  },
+use crate::synchronization::{
+  interface::Mutex,
+  NullLock,
 };
 
 const NUM_DRIVERS: usize = 5;
@@ -123,15 +120,5 @@ impl DriverManager {
         }
       }
     });
-  }
-
-  /// Enumerate all registered device drivers
-  pub fn enumerate(&self) {
-    let mut i: usize = 1;
-
-    self.for_each_descriptor(|d| {
-      println!("\t{}: {}", i, d.device_driver.compatible());
-      i += 1;
-    })
   }
 }

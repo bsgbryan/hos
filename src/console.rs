@@ -21,10 +21,8 @@ pub mod interface {
     /// Write a Rust format string
     fn write_fmt(&self, args: fmt::Arguments) -> fmt::Result;
 
-    // Why is this here if it isn't used?
-    // This caused hours of frustration because rustc was throwing dead code warning - which this project treats like errors
     // Block until the last buffered character has been physically put on the TX wire
-    // fn flush(&self);
+    fn flush(&self);
   }
 
   /// Console read functions
@@ -40,8 +38,8 @@ pub mod interface {
 
   /// Super-fun console statistics!
   pub trait Statistics {
-    /// The number of characters written
-    fn chars_written(&self) -> usize { 0 }
+    // The number of characters written
+    // fn chars_written(&self) -> usize { 0 }
 
     // Why is this here if it isn't used?
     // This caused hours of frustration because rustc was throwing dead code warning - which this project treats like errors

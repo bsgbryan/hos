@@ -16,24 +16,24 @@ pub mod interface {
 
   /// Console write functions
   pub trait Write {
-    /// Write a single character
-    fn write_char(&self, c: char);
+    // Write a single character
+    // fn write_char(&self, c: char);
     /// Write a Rust format string
     fn write_fmt(&self, args: fmt::Arguments) -> fmt::Result;
 
     // Block until the last buffered character has been physically put on the TX wire
-    fn flush(&self);
+    // fn flush(&self);
   }
 
   /// Console read functions
   pub trait Read {
-    /// Read a single character
-    fn read_char(&self) -> char {
-      ' '
-    }
+    // Read a single character
+    // fn read_char(&self) -> char {
+    //   ' '
+    // }
 
-    /// Clear the RX buffer
-    fn clear_rx(&self);
+    // Clear the RX buffer
+    // fn clear_rx(&self);
   }
 
   /// Super-fun console statistics!

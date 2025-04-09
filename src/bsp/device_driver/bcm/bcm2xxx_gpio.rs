@@ -4,6 +4,8 @@
 
 //! GPIO driver
 
+use core::time::Duration;
+
 use tock_registers::{
   interfaces::{
     ReadWriteable,
@@ -21,6 +23,7 @@ use crate::{
     NullLock,
     self,
   },
+  time,
 };
 
 register_bitfields! {
@@ -129,21 +132,18 @@ impl GPIOInner {
   /// Disable pull-up/down on lins 14 and 15
   #[cfg(feature = "bsp_rpi3")]
   fn disable_pud_14_15_bcm2837(&mut self) {
-    use crate::cpu;
-
-    // Make an educated guess for a good delay value (sequence described in the BCM2837 peripherals PDF)
-    // - According to Wikipedia, the fastest PRi4 clocks around 1.5GHz
-    // - The Linux 2837 GPIO driver waits 1 µs between the steps
-    // So let's try to be on the safe side and default to 2,000 cycles - which would equal ~1µs for a 2GHz CPU
-    const DELAY: usize = 2000;
+    // The Linu x2837 GPIO driver waits 1 µs between steps
+    const DELAY: Duration = Duration::from_micros(1);
 
     self.registers.GPPUD.write(GPPUD::PUD::Off);
-    cpu::spin_for_cycles(DELAY);
+    time::time_manager().spin_for(DELAY);
 
-    let assert_clock = GPPUDCLK0::PUDCLK15::AssertClock + GPPUDCLK0::PUDCLK14::AssertClock;
-
-    self.registers.GPPUDCLK0.write(assert_clock);
-    cpu::spin_for_cycles(DELAY);
+    self.registers.GPPUDCLK0.write(
+      GPPUDCLK0::PUDCLK15::AssertClock
+      +
+      GPPUDCLK0::PUDCLK14::AssertClock
+    );
+    time::time_manager().spin_for(DELAY);
 
     self.registers.GPPUD.write(GPPUD::PUD::Off);
     self.registers.GPPUDCLK0.set(0);

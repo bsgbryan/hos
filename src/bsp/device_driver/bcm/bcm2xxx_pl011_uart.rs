@@ -150,16 +150,16 @@ register_structs! {
 
 type Registers = MMIODerefWrapper<RegisterBlock>;
 
-#[derive(PartialEq)]
-enum BlockingMode {
-  Blocking,
-  NonBlocking,
-}
+// #[derive(PartialEq)]
+// enum BlockingMode {
+//   Blocking,
+//   NonBlocking,
+// }
 
 struct PL011UartInner {
   registers: Registers,
   chars_written: usize,
-  chars_read: usize,
+  // chars_read: usize,
 }
 
 pub struct PL011Uart {
@@ -178,7 +178,7 @@ impl PL011UartInner {
     Self {
       registers: unsafe { Registers::new(mmio_start_addr) },
       chars_written: 0,
-      chars_read: 0,
+      // chars_read: 0,
     }
   }
 
@@ -244,28 +244,31 @@ impl PL011UartInner {
     }
   }
 
-  /// Retrieve a character
-  fn read_char(&mut self, blocking_mode: BlockingMode) -> Option<char> {
-    // If RX FIFO is empty
-    if self.registers.FR.matches_all(FR::RXFE::SET) {
-      // immediately return in non-blocking mode
-      if blocking_mode == BlockingMode::NonBlocking {
-        return None;
-      }
+  // Retrieve a character
+  // fn read_char_converting(&mut self, blocking_mode: BlockingMode) -> Option<char> {
+  //   // If RX FIFO is empty
+  //   if self.registers.FR.matches_all(FR::RXFE::SET) {
+  //     // immediately return in non-blocking mode
+  //     if blocking_mode == BlockingMode::NonBlocking {
+  //       return None;
+  //     }
 
-      // Otherwise, wait until a char is received
-      while self.registers.FR.matches_all(FR::RXFE::SET) {
-        cpu::nop();
-      }
-    }
+  //     // Otherwise, wait until a char is received
+  //     while self.registers.FR.matches_all(FR::RXFE::SET) {
+  //       cpu::nop();
+  //     }
+  //   }
 
-    // Read one character
-    let ret = self.registers.DR.get() as u8 as char;
+  //   // Read one character
+  //   let mut ret = self.registers.DR.get() as u8 as char;
 
-    self.chars_read += 1;
+  //   // Convert carriage return to newline
+  //   if ret == '\r' { ret = '\n'; }
 
-    Some(ret)
-  }
+  //   self.chars_read += 1;
+
+  //   Some(ret)
+  // }
 }
 
 /// Implementing `core::fmt::Write` enables usage of the `format_args!` macros - whic hare used to implement the `kernel`'s `print!` and `println!` macros
@@ -309,28 +312,28 @@ impl driver::interface::DeviceDriver for PL011Uart {
 }
 
 impl console::interface::Write for PL011Uart {
-  fn write_char(&self, c: char) {
-    self.inner.lock(|i| i.write_char(c));
-  }
+  // fn write_char(&self, c: char) {
+  //   self.inner.lock(|i| i.write_char(c));
+  // }
 
   fn write_fmt(&self, args: core::fmt::Arguments) -> fmt::Result {
     self.inner.lock(|i| fmt::Write::write_fmt(i, args))
   }
 
-  fn flush(&self) {
-    self.inner.lock(|i| i.flush());
-  }
+  // fn flush(&self) {
+  //   self.inner.lock(|i| i.flush());
+  // }
 }
 
 impl console::interface::Read for PL011Uart {
-  fn read_char(&self) -> char {
-    self.inner.lock(|i| i.read_char(BlockingMode::Blocking).unwrap())
-  }
+  // fn read_char(&self) -> char {
+  //   self.inner.lock(|i| i.read_char_converting(BlockingMode::Blocking).unwrap())
+  // }
 
-  fn clear_rx(&self) {
-    // Read from ther RX FIFO until it's empty
-    while self.inner.lock(|i| i.read_char(BlockingMode::NonBlocking)).is_some() {}
-  }
+  // fn clear_rx(&self) {
+  //   // Read from ther RX FIFO until it's empty
+  //   while self.inner.lock(|i| i.read_char_converting(BlockingMode::NonBlocking)).is_some() {}
+  // }
 }
 
 impl console::interface::Statistics for PL011Uart {

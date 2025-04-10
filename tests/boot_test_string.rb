@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-EXPECTED_STRING = 'Spinning for 1 second'
+EXPECTED_STRING = 'Echoing input now'

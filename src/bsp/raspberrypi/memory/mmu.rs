@@ -12,7 +12,7 @@ use crate::memory::mmu::*;
 /// The kernel's address space defined by this BSP
 pub type KernelAddrSpace = AddressSpace<{ memory_map::END_INCLUSIVE + 1 }>;
 
-const NUM_MEM_RANGES: usize = 3;
+const NUM_MEM_RANGES: usize = 2;
 
 /// The virtual memory layout
 /// The layout must contain only special ranges - meaning only things _not_ normal cacheable DRAM
@@ -31,20 +31,6 @@ pub static LAYOUT: KernelVirtualLayout<NUM_MEM_RANGES> = KernelVirtualLayout::ne
       },
     },
     TranslationDescriptor {
-      name: "Remapped Device MMIO",
-      virtual_range: remapped_mmio_range_inclusive,
-      physical_range_translation: Translation::Offset(
-        memory_map::mmio::START
-        +
-        0x20_0000
-      ),
-      attribute_fields: AttributeFields {
-        mem_attributes: MemAttributes::Device,
-        acc_perms: AccessPermissions::ReadWrite,
-        execute_never: true,
-      },
-    },
-    TranslationDescriptor {
       name: "Primary Device MMIO",
       virtual_range: mmio_range_inclusive,
       physical_range_translation: Translation::Identity,
@@ -60,11 +46,6 @@ pub static LAYOUT: KernelVirtualLayout<NUM_MEM_RANGES> = KernelVirtualLayout::ne
 fn code_range_inclusive() -> RangeInclusive<usize> {
   // Notice the subtraction to turn the exclusive end into an inclusive end
   RangeInclusive::new(super::code_start(), super::code_end_exclusive() - 1)
-}
-
-fn remapped_mmio_range_inclusive() -> RangeInclusive<usize> {
-  // The last 64KiB slot in the first 512MiB table
-  RangeInclusive::new(0x1FFF_0000, 0x1FFF_FFFF)
 }
 
 fn mmio_range_inclusive() -> RangeInclusive<usize> {

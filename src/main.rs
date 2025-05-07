@@ -38,6 +38,8 @@ mod time;
 fn kernel_init() -> ! {
   use memory::mmu::interface::MMU;
 
+  exception::handling_init();
+
   if let Err(string) = unsafe { memory::mmu::mmu().enable_mmu_and_caching() } {
     panic!("MMU: {}", string);
   }
@@ -57,10 +59,7 @@ fn kernel_init() -> ! {
 
 /// main kernel function
 fn kernel_main() -> ! {
-  use console::{
-    console,
-    interface::Write,
-  };
+  use console::console;
   use core::time::Duration;
 
   info!("{} v{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
@@ -82,9 +81,28 @@ fn kernel_main() -> ! {
   info!("Timer test: spinning for 1 second");
   time::time_manager().spin_for(Duration::from_secs(1));
 
-  let remapped_uart = unsafe { bsp::device_driver::PL011Uart::new(0x1FFF_1000) };
-  writeln!(remapped_uart, "[     !!!    ] Writing through the remapped UART at 0x1FFF_1000").unwrap();
+  // Cause an exception by accessing a virtual address for which no translation was setup
+  // This code accesses the address 8 GiB, which is outside the mapped address space
+  //
+  // For demo purposes, the exception handler will catch the faulting 8 GiB address and allow execution to continue
+  info!("");
+  info!("Trying to read from address 8 GiB");
+  let big_addr: u64 = 8 * 1024 * 1024 * 1024;
+  unsafe { core::ptr::read_volatile(big_addr as *mut u64) };
 
+  info!("************************************************");
+  info!("WHOA! We recovered from a synchronous exception!");
+  info!("************************************************");
+  info!("");
+  info!("... let's try again");
+
+  // Now use address 9 GiB
+  // The exception handler won't forgive us this time...
+  info!("Trying to read from address 9 GiB");
+  let big_addr: u64 = 9 * 1024 * 1024 * 1024;
+  unsafe { core::ptr::read_volatile(big_addr as *mut u64) };
+  
+  // We won't get here right now
   info!("Echoing input now");
 
   // Discard any spurious received characters before going into echo mode

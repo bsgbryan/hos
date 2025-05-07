@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-EXPECTED_STRING = 'Echoing input now'
+EXPECTED_STRING = 'lr : 0x'
